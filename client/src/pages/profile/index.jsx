@@ -94,11 +94,16 @@ const Profile = () => {
       if (response.status === 200 && response.data.image) {
         setUserInfo({ ...userInfo, image: response.data.image });
 
-        setImage(`${HOST}/${response.data.image}`)
+        setImage(`${HOST}/${response.data.image}`);
 
         toast.success("Image updated successfully.");
       }
 
+      // const reader = new FileReader();
+      // reader.onload = () => {
+      //   setImage(reader.result);
+      // };
+      // reader.readAsDataURL(file);
     }
   };
 
