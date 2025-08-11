@@ -42,22 +42,36 @@ const Auth = () => {
       toast.error("Password does not match.");
       return false;
     }
+
     return true;
   };
 
   const handleLogin = async () => {
     if (validateLogin()) {
-      const response = await apiClient.post(
-        LOGIN_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      if (response.data.user.id) {
-        setUserInfo(response.data.user);
-        if (response.data.user.profileSetup) navigate("/chat");
-        else navigate("/profile");
+      try {
+        const response = await apiClient.post(
+          LOGIN_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        if (response.data.user.id) {
+          setUserInfo(response.data.user);
+          if (response.data.user.profileSetup) navigate("/chat");
+          else navigate("/profile");
+        }
+        console.log({ response });
+      } catch (error) {
+        if (
+          error.response?.status === 400 &&
+          error.response?.data === "Password is incorrect."
+        ) {
+          toast.error("Password is incorrect.");
+        } else if (error.response?.status === 404) {
+          toast.error("User not found. Please check your email.");
+        } else {
+          toast("Login failed. Please try again.");
+        }
       }
-      console.log({ response });
     }
   };
   const handleSignup = async () => {
